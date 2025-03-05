@@ -1,6 +1,6 @@
-from django.shortcuts import render
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, BasePermission
+from .permissions import IsStaffUser
 from .serializers import MovieSerializer, BookingSerializer
 from movies.models import Movie
 from booking.models import Booking
@@ -11,10 +11,20 @@ from booking.models import Booking
 class MovieViewSet(viewsets.ModelViewSet):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsStaffUser]
 
 class BookingViewSet(viewsets.ModelViewSet):
     queryset = Booking.objects.all()
     serializer_class = BookingSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_permissions(self):
+        if self.action in ['list', 'retrieve']:
+            return [IsAuthenticated()]
+        return [IsAuthenticated(), IsStaffUser()]   
+
+# Permissão personalizada para funcionários
+
+class IsStaffUser(BasePermission):
+    def has_permission(self, request, view):
+        return request.user and request.user.is_staff
