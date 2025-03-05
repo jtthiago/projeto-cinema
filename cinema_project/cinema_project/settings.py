@@ -75,6 +75,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'logs.middleware.ActionLoggingMiddleware', # Nosso middleware de logs!
 ]
 
 ROOT_URLCONF = 'cinema_project.urls'

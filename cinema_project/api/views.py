@@ -4,6 +4,9 @@ from .permissions import IsStaffUser
 from .serializers import MovieSerializer, BookingSerializer
 from movies.models import Movie
 from booking.models import Booking
+from logs.models import ActionLog
+from .serializers import ActionLogSerializer
+from rest_framework.permissions import IsAdminUser
 
 
 # Create your views here.
@@ -21,8 +24,13 @@ class BookingViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
             return [IsAuthenticated()]
-        return [IsAuthenticated(), IsStaffUser()]   
+        return [IsAuthenticated(), IsStaffUser()] 
 
+
+class ActionLogViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = ActionLog.objects.all().order_by('-timestamp')  # Logs mais recentes primeiro
+    serializer_class = ActionLogSerializer
+    permission_classes = [IsAdminUser]
 # Permissão personalizada para funcionários
 
 class IsStaffUser(BasePermission):
