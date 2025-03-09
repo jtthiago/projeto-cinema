@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, BasePermission
-from .permissions import IsStaffUser
+from api.permissions import IsStaffOrReadOnly
 from .serializers import MovieSerializer, BookingSerializer
 from movies.models import Movie
 from booking.models import Booking
@@ -14,7 +14,7 @@ from rest_framework.permissions import IsAdminUser
 class MovieViewSet(viewsets.ModelViewSet):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
-    permission_classes = [IsAuthenticated, IsStaffUser]
+    permission_classes = [IsAuthenticated, IsStaffOrReadOnly]
 
 class BookingViewSet(viewsets.ModelViewSet):
     queryset = Booking.objects.all()
